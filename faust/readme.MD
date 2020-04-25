@@ -37,7 +37,7 @@ Currently I use the notepad++ windows program as my text editor.
 If you'd rather use vi, then change the line:
 
 `EDITOR="/mnt/c/Program Files (x86)/Notepad++/notepad++.exe"`<br>
-to:
+to:<br>
 `EDITOR="vi"`
 
 You should also set the COM port and baud rate according to what your board will support.  This is just my quick attempt at setting up a menu that lets me quickly get to most of what I'd like to do.  Note that opening the Faust DSP file launches the editor in the background, so the Faust compiler is run immediately.  I do this so I can keep the editor open.  It means that after I save my Faust changes, I hit "1" again, which triggers the compilation.
