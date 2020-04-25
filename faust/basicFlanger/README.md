@@ -5,8 +5,8 @@ Actually it looks like in this version of the code, I have two flangers, one on 
 
 It is stereo-mono in and out.
 
-Key 1: delay time down<br>
-Key 2: delay time up<br>
+Key 1: flanger delay time down<br>
+Key 2: flanger delay time up<br>
 Key 3: LFO rate down<br>
 Key 4: LFO rate up<br>
 Key 5: LFO width down<br>
