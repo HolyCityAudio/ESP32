@@ -5,6 +5,7 @@ Here are some assumptions as to the environment.
 - You are using Ubuntu 18.04 or similar.  My development system is actually the Ubuntu subsystem on Windows 10,
 which you can install from the Microsoft store.
 - You have installed the ESP-IDF environment version 4.0.  See:  https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html#
+- The project layout is like a typical ESP-IDF project.
 - You have compiled Faust from source.  See: https://github.com/grame-cncm/faust
 - You have copied the file faust-build.sh to your ESP32/esp-idf/tools folder and marked it executable.
 
