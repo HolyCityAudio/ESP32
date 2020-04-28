@@ -8345,7 +8345,7 @@ class mydsp : public dsp {
 			fRec4[0] = (((fRec3[1] >= 1.0f) & (fRec5[1] != fTemp1)) ? fTemp1 : fRec4[1]);
 			fRec5[0] = (((fRec3[1] <= 0.0f) & (fRec4[1] != fTemp1)) ? fTemp1 : fRec5[1]);
 			fRec7[0] = (fSlow1 + (0.999000013f * fRec7[1]));
-			float fTemp3 = (fTemp0 + (0.5f * (fRec7[0] * fRec0[1])));
+			float fTemp3 = (fTemp0 + (fRec7[0] * fRec0[1]));
 			fVec0[(IOTA & 524287)] = fTemp3;
 			fRec8[0] = (fSlow2 + (0.999000013f * fRec8[1]));
 			float fTemp4 = std::tan((fConst2 * fRec8[0]));
@@ -8353,7 +8353,7 @@ class mydsp : public dsp {
 			float fTemp6 = (((fTemp5 + 1.41421354f) / fTemp4) + 1.0f);
 			fRec1[0] = ((((1.0f - fRec3[0]) * fVec0[((IOTA - int(std::min<float>(fConst1, std::max<float>(0.0f, fRec4[0])))) & 524287)]) + (fRec3[0] * fVec0[((IOTA - int(std::min<float>(fConst1, std::max<float>(0.0f, fRec5[0])))) & 524287)])) - (((fRec1[2] * (((fTemp5 + -1.41421354f) / fTemp4) + 1.0f)) + (2.0f * (fRec1[1] * (1.0f - (1.0f / mydsp_faustpower2_f(fTemp4)))))) / fTemp6));
 			fRec0[0] = ((fRec1[2] + (fRec1[0] + (2.0f * fRec1[1]))) / fTemp6);
-			float fTemp7 = (fTemp0 + fRec0[0]);
+			float fTemp7 = (fTemp0 + (0.5f * fRec0[0]));
 			output0[i] = FAUSTFLOAT(fTemp7);
 			output1[i] = FAUSTFLOAT(fTemp7);
 			fRec6[1] = fRec6[0];
