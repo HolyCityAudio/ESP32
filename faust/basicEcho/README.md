@@ -1,16 +1,16 @@
-# faust basicFlanger
-
-This is a basic flanger for the ESP32-A1S audio/wifi/bluetooth dev board.<br>
-Actually it looks like in this version of the code, I have two flangers, one on either side of a fixed delay with a little feedback.  They are sweeping in opposite directions and have opposite phase shift.  Take blocks out to experiment with the sound.  Also there is a Faust "12AX7" block in there!
+# faust basicEcho is a basic echo for the ESP32-A1S audio/wifi/bluetooth dev board.<br>
+This patch uses the sdelay function which allows real time delay time changes without doing
+pitch bending.  Sort of depends on what you're after.  Also includes a low pass filter in
+the feedback loop.  Mix level is fixed at -3 dB.
 
 It is stereo-mono in and out.
 
-Key 1: delay time down<br>
-Key 2: delay time up<br>
-Key 3: LFO rate down<br>
-Key 4: LFO rate up<br>
-Key 5: LFO width down<br>
-Key 6: LFO width up<br>
+Key 1: delay feedback down<br>
+Key 2: delay feedback up<br>
+Key 3: delay time down<br>
+Key 4: delay time up<br>
+Key 5: LPF frequency down<br>
+Key 6: LPF frequency up<br>
 
 See main.cpp for the button control mapping to parameters in the Faust code.<br>
 The button code came from: https://github.com/craftmetrics/esp32-button
