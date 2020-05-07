@@ -45,16 +45,16 @@ class flangerOSC
     
         esp32audio* fAudio;
     	dsp* fDSP;
+
     #ifdef MIDICTRL
         esp32_midi* fMIDIHandler;        
         MidiUI* fMIDIInterface;
     #endif
 
     public:
-    
+        MapUI* fUI;    
         flangerOSC(int sample_rate, int buffer_size);
         ~flangerOSC();
-        MapUI* fUI;
     
         bool start();
         void stop();

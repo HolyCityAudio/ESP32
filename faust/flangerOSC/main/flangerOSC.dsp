@@ -12,10 +12,8 @@ flaLFO = os.lf_triangle(flaLFORate);
 flaMod = flaLFOWidth * (flaLFO/2) ;
 flanger(x) = pf.flanger_mono(512, flaDelay * (1 + (x * flaMod)), flaDepth, flaFeedback, 1);
 flange = vgroup("Flange", flanger(1));
-// fbkEcho = +~ (de.sdelay(ba.sec2samp(1), 1024, ba.sec2samp(echoDelay)) : fi.lowpass(2,echoLPF)) * (echoFeedback);
-// fbkEcho = ( + : de.sdelay(ba.sec2samp(1), 1024, ba.sec2samp(echoDelay)) : fi.lowpass(2,echoLPF)) ~* (echoFeedback);
-// fbkEcho = ( + : de.sdelay(ba.sec2samp(1), 1024, ba.sec2samp(echoDelay))) ~* (echoFeedback);
-fbkEcho = ( + : de.sdelay(ba.sec2samp(1), 1024, ba.sec2samp(echoDelay))) * (echoFeedback);
+fbkEcho = ( + : de.sdelay(ba.sec2samp(1), 1024, ba.sec2samp(echoDelay))) ~* (echoFeedback);
+// fbkEcho = ( + : de.sdelay(ba.sec2samp(1), 1024, ba.sec2samp(echoDelay))) * (echoFeedback);
 echoOut = _ <: _,fbkEcho : +;
 //=============================================
-process =  _,_: + : flange <: _,_;
+process =  _,_: + : echoOut: flange <: _,_;
