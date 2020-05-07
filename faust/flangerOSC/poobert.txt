@@ -1,0 +1,365 @@
+<<<<<<< poobert.txt
+=======
+/* Hello World Example
+
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+#include <stdio.h>
+// #include <string.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
+#include "esp_system.h"
+#include "esp_spi_flash.h"
+#include "esp_log.h"
+#include "nvs_flash.h"
+#include "soc/timer_group_struct.h"
+#include "soc/timer_group_reg.h"
+
+#include "AC101.h"
+#include "flangerOSC.h"
+
+<<<<<<< poobert.txt
+#define DELAYMIN 64
+#define DELAYMAX 864
+#define LFORATEMIN 0.02
+#define LFORATEFACTOR 1.2
+#define LFORATEMAX 8.0
+#define LFOWIDTHMIN 0.02
+#define LFOWIDTHFACTOR 1.2
+#define LFOWIDTHMAX 1.0
+
+#define BUTTONSUPPORT 0
+
+#if BUTTONSUPPORT
+extern "C" {
+#include "button.h"
+}
+#endif
+=======
+// #include "audio_pipeline.h"
+// #include "i2s_stream.h"
+// #include "board.h"
+// #include "Midpoint.h"
+#include "faust/gui/MapUI.h"
+
+
+#include "oscpkt.hh"
+>>>>>>> /home/gary/github/ESP32/faust/flangerOSC/main/udp_server.cpp
+
+extern "C" {
+    void app_main(void);
+}
+
+<<<<<<< poobert.txt
+void udp_server_init(char * deviceName, MapUI * pUI);
+=======
+/* The examples use simple WiFi configuration that you can set via
+   'make menuconfig'.
+   If you'd rather not, just change the below entries to strings with
+   the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
+*/
+#define EXAMPLE_WIFI_SSID "Mountain-Charlie"
+#define EXAMPLE_WIFI_PASS "aaaaaaaa"
+
+#define CONFIG_EXAMPLE_IPV4 true
+
+#define CONFIG_EXAMPLE_PORT 9000
+#define PORT CONFIG_EXAMPLE_PORT
+>>>>>>> /home/gary/github/ESP32/faust/flangerOSC/main/udp_server.cpp
+
+int SR = 32000;
+int BS = 128;
+//  BS = 256 seems to be about the maximum you can set it.
+//  maybe 384.  I'm setting it higher to try to avoid WDT CPU0 Idle errors
+//  when I add more blocks to the DSP file
+//  BS = 512 causes stack overflow and reboot
+flangerOSC flangerOSC(SR,BS); 	
+
+<<<<<<< poobert.txt
+=======
+/* FreeRTOS event group to signal when we are connected & ready to make a request */
+static EventGroupHandle_t wifi_event_group;
+
+const int IPV4_GOTIP_BIT = BIT0;
+const int IPV6_GOTIP_BIT = BIT1;
+
+MapUI * fUI;
+char deviceString[64];
+int deviceStringLength;
+>>>>>>> /home/gary/github/ESP32/faust/flangerOSC/main/udp_server.cpp
+
+<<<<<<< poobert.txt
+void app_main(void)
+=======
+static const char *TAG = "udp_sender";
+
+static esp_err_t event_handler(void *ctx, system_event_t *event)
+{
+    switch (event->event_id) {
+    case SYSTEM_EVENT_STA_START:
+    {
+        esp_wifi_connect();
+        ESP_LOGI(TAG, "SYSTEM_EVENT_STA_START");
+        break;
+    }
+    case SYSTEM_EVENT_STA_CONNECTED:
+    {
+        /* enable ipv6 */
+        tcpip_adapter_create_ip6_linklocal(TCPIP_ADAPTER_IF_STA);
+        break;
+    }
+    case SYSTEM_EVENT_STA_GOT_IP:
+    {
+        xEventGroupSetBits(wifi_event_group, IPV4_GOTIP_BIT);
+        ESP_LOGI(TAG, "SYSTEM_EVENT_STA_GOT_IP");
+        break;
+    }
+    case SYSTEM_EVENT_STA_DISCONNECTED:
+    {
+        /* This is a workaround as ESP32 WiFi libs don't currently auto-reassociate. */
+        esp_wifi_connect();
+        xEventGroupClearBits(wifi_event_group, IPV4_GOTIP_BIT);
+        xEventGroupClearBits(wifi_event_group, IPV6_GOTIP_BIT);
+        break;
+    }
+    case SYSTEM_EVENT_AP_STA_GOT_IP6:
+    {
+        xEventGroupSetBits(wifi_event_group, IPV6_GOTIP_BIT);
+        ESP_LOGI(TAG, "SYSTEM_EVENT_STA_GOT_IP6");
+
+        char *ip6 = ip6addr_ntoa(&event->event_info.got_ip6.ip6_info.ip);
+        ESP_LOGI(TAG, "IPv6: %s", ip6);
+    }
+    default:
+        break;
+    }
+    return ESP_OK;
+}
+
+static void initialise_wifi(void)
+{
+    tcpip_adapter_init();
+    wifi_event_group = xEventGroupCreate();
+    ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
+    ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
+    wifi_config_t wifi_config = {
+        .sta = {
+            {.ssid = EXAMPLE_WIFI_SSID},
+            {.password = EXAMPLE_WIFI_PASS}
+        },
+    };
+    ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
+    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
+    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
+    ESP_ERROR_CHECK( esp_wifi_start() );
+}
+
+static void wait_for_ip()
+{
+    uint32_t bits = IPV4_GOTIP_BIT | IPV6_GOTIP_BIT ;
+
+    ESP_LOGI(TAG, "Waiting for AP connection...");
+    //xEventGroupWaitBits(wifi_event_group, bits, false,i true, portMAX_DELAY);
+    ESP_LOGI(TAG, "Connected to AP");
+}
+
+static void udp_server_task(void *pvParameters)
+>>>>>>> /home/gary/github/ESP32/faust/flangerOSC/main/udp_server.cpp
+{
+	int delay = DELAYMIN;
+	float rate = 1.0;
+	float width = 0.25;
+    AC101 AC101;
+
+    AC101.begin();
+	AC101.SetVolumeHeadphone(63);
+
+#if BUTTONSUPPORT
+	button_event_t ev;
+	QueueHandle_t button_events = button_init(PIN_BIT(5) | PIN_BIT(13) | PIN_BIT(18)  | PIN_BIT(19) | PIN_BIT(23) | PIN_BIT(36));
+#endif
+
+	// try to get the wireless SSID and password from NVRAM
+	esp_err_t err = nvs_flash_init();
+    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        // NVS partition was truncated and needs to be erased
+        // Retry nvs_flash_init
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        err = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( err );
+
+    // Open
+    printf("\n");
+    printf("Opening Non-Volatile Storage (NVS) handle... ");
+    nvs_handle_t my_handle;
+    err = nvs_open("storage", NVS_READWRITE, &my_handle);
+    if (err != ESP_OK) {
+        printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
+    } else {
+        printf("Done\n");
+
+        // Read
+        printf("Reading restart counter from NVS ... ");
+        char ssid[65]; // restart_counter = 0; // value will default to 0, if not set yet in NVS
+		int32_t restart_counter = 0;
+		size_t ssid_size = sizeof(ssid);
+        err = nvs_get_str(my_handle, "ssid", ssid, &ssid_size);
+        switch (err) {
+            case ESP_OK:
+                printf("Done\n");
+                printf("NVRAM: ssid = %s\n", ssid);
+                break;
+            case ESP_ERR_NVS_NOT_FOUND:
+                printf("The value is not initialized yet!\n");
+				printf("Setting ssid to poobert.");
+				err = nvs_set_str(my_handle, "ssid", "poobert");
+				printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+				
+                break;
+            default :
+                printf("Error (%s) reading!\n", esp_err_to_name(err));
+        }
+		
+		err = nvs_get_i32(my_handle, "restart_counter", &restart_counter);
+        switch (err) {
+            case ESP_OK:
+                printf("Done\n");
+                printf("NVRAM: restart_counter = %d\n", restart_counter);
+                break;
+            case ESP_ERR_NVS_NOT_FOUND:
+                printf("The value is not initialized yet!\n");
+                break;
+            default :
+                printf("Error (%s) reading!\n", esp_err_to_name(err));
+        }
+
+<<<<<<< poobert.txt
+        // Write
+        printf("Updating restart counter in NVS ... ");
+        restart_counter++;
+        err = nvs_set_i32(my_handle, "restart_counter", restart_counter);
+        printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+
+        // Commit written value.
+        // After setting any values, nvs_commit() must be called to ensure changes are written
+        // to flash storage. Implementations may write to storage at other times,
+        // but this is not guaranteed.
+        printf("Committing updates in NVS ... ");
+        err = nvs_commit(my_handle);
+        printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+=======
+// void udp_server_init(string deviceName)
+void udp_server_init(char * deviceName, MapUI * pUI)
+{
+    ESP_ERROR_CHECK( nvs_flash_init() );
+    initialise_wifi();
+    wait_for_ip();
+	fUI = pUI;
+	strcpy(deviceString, deviceName);
+	deviceStringLength = strlen(deviceString);
+    ESP_LOGI(TAG, "deviceString %s", (char *) deviceString);
+
+//    ESP_LOGI(TAG, "[ 1 ] Start codec chip");
+//    audio_board_handle_t board_handle = audio_board_init();
+//    audio_hal_ctrl_codec(board_handle->audio_hal, AUDIO_HAL_CODEC_MODE_BOTH,  AUDIO_HAL_CTRL_START);
+  
+    xTaskCreate(udp_server_task, "udp_server", 4096, NULL, 5, NULL);
+    
+    //audio_hal_set_volume(board_handle->audio_hal, 100);
+>>>>>>> /home/gary/github/ESP32/faust/flangerOSC/main/udp_server.cpp
+
+        // Close
+        nvs_close(my_handle);
+    }
+	
+    flangerOSC.start();
+	
+	MapUI* gooey = flangerOSC.fUI;
+				
+	udp_server_init("flanger/", gooey);
+
+    while (true) {
+#if BUTTONSUPPORT
+		if (xQueueReceive(button_events, &ev, 1000/portTICK_PERIOD_MS)) {
+//			ESP_LOGI("Queue rx", "pin %d", ev.pin);
+			if ((ev.pin == 36) && (ev.event == BUTTON_DOWN)) {
+				if (delay > DELAYMIN) 
+				{
+					delay--;
+				}
+				flangerOSC.setParamValue("Delay", delay);		
+				ESP_LOGI("Flanger delay", "Down-> %d", delay);
+			}			
+			if ((ev.pin == 13) && (ev.event == BUTTON_DOWN)) {
+				if (delay < DELAYMAX) 
+				{
+					delay++;
+				}
+				flangerOSC.setParamValue("Delay", delay);		
+				ESP_LOGI("Flanger delay", "Up-> %d", delay);
+			}
+			if ((ev.pin == 5) && (ev.event == BUTTON_DOWN)) {
+				if (width < LFOWIDTHMAX) 
+				{
+					width = width * LFOWIDTHFACTOR;
+				}
+				else 
+				{
+					width = LFOWIDTHMAX;
+				}
+				if (width < LFOWIDTHMIN)
+				{
+					width = LFOWIDTHMIN;
+				}
+				flangerOSC.setParamValue("Width", width);	
+				ESP_LOGI("LFO Width", "Up=>%f", width);
+			}
+			if ((ev.pin == 18) && (ev.event == BUTTON_DOWN)) {
+				if (width > LFOWIDTHMIN) 
+				{
+					width = width/LFOWIDTHFACTOR;
+				}
+				else 
+				{
+					width = 0.0;
+				}
+				flangerOSC.setParamValue("Width", width);	
+				ESP_LOGI("LFO Width", "Down=>%f", width);
+			}			
+			if ((ev.pin == 19) && (ev.event == BUTTON_DOWN)) {
+				if (rate > LFORATEMIN) 
+				{
+					rate = rate/LFORATEFACTOR;
+				}
+				else 
+				{
+					rate = 0.0;
+				}
+				flangerOSC.setParamValue("Rate", rate);	
+				ESP_LOGI("LFO Rate", "Down->%f", rate);
+			}
+			if ((ev.pin == 23) && (ev.event == BUTTON_DOWN)) {
+				if (rate <  LFORATEMIN) 
+				{
+					rate = LFORATEMIN;
+				}
+				if (rate <  LFORATEMAX) 
+				{
+					rate = rate * LFORATEFACTOR;
+				}
+				flangerOSC.setParamValue("Rate", rate);	
+				ESP_LOGI("LFO Rate", "Up->%f", rate);
+			}		
+		}
+	#endif
+    }
+}
+>>>>>>> /home/gary/github/ESP32/faust/flangerOSC/main/main.cpp
