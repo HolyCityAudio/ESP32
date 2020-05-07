@@ -1,4 +1,4 @@
-faust flangerOSC
+### faust flangerOSC
 
 This is a basic echo with feedback feeding into a single flanger for the ESP32-A1S audio/wifi/bluetooth dev board.
 
@@ -10,19 +10,19 @@ The OSC code used is not official Faust support for OSC, so it's a bit of a hack
 
 Normally, this line in flangerOSC.h gets put in the "private" section of the flangerOSC class.  It needs to be moved to the "public" section instead.  This will have to be done each time you generate the DSP C++ code from the Faust source.
 
-###         MapUI* fUI;
+`MapUI* fUI;`
 
 Another assumption is that you have checked out the faust repo to ~/github/faust.  See main/CMakeLists.txt if you wish to change the include path.
 
 It is stereo-mono in and out.
 
-Key 1: echo delay level down
-Key 2: echo delay level up
-Key 3: LFO rate down
-Key 4: LFO rate up
-Key 5: LFO width down
-Key 6: LFO width up
+Key 1: echo delay level down<br>
+Key 2: echo delay level up<br>
+Key 3: LFO rate down<br>
+Key 4: LFO rate up<br>
+Key 5: LFO width down<br>
+Key 6: LFO width up<br>
 
-See main.cpp for the button control mapping to parameters in the Faust code.
-The button code came from: https://github.com/craftmetrics/esp32-button
+See main.cpp for the button control mapping to parameters in the Faust code.<br>
+The button code came from: https://github.com/craftmetrics/esp32-button<br>
 The OSC code came from: https://github.com/droosenb/faust-on-ESP32/tree/master/LyraT_OSC_simple
