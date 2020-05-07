@@ -62,8 +62,9 @@ void udp_server_init(char * deviceName, MapUI * pUI);
 void initialise_wifi(uint8_t *, uint8_t *);
 void wait_for_ip();
 
-uint8_t wifi_ssid [] = "Mountain-Charlie";
-uint8_t wifi_pass [] = "aaaaaaaa";
+// see also wifi.cpp, this is half implemented
+uint8_t wifi_ssid [] = "your-ssid";
+uint8_t wifi_pass [] = "your-password";
 
 int SR = 32000;
 int BS = 128;
