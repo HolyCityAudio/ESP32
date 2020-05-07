@@ -49,9 +49,9 @@ void app_main(void)
 //  BS = 512 causes stack overflow and reboot
     int BS = 128;
  
-	float echoFeedback = 0.25;
-	float rate = 1.0;
-	float width = 0.25;
+	float echoFeedback = 0.0;
+	float rate = 0.5;
+	float width = 0.0;
 
     AC101 AC101;
 //    initialise_wifi();

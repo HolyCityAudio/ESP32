@@ -8336,9 +8336,9 @@ class mydsp : public dsp {
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = FAUSTFLOAT(0.25f);
-		fHslider1 = FAUSTFLOAT(0.25f);
-		fHslider2 = FAUSTFLOAT(0.5f);
+		fHslider0 = FAUSTFLOAT(0.0f);
+		fHslider1 = FAUSTFLOAT(0.5f);
+		fHslider2 = FAUSTFLOAT(0.0f);
 	}
 	
 	virtual void instanceClear() {
@@ -8399,11 +8399,11 @@ class mydsp : public dsp {
 	virtual void buildUserInterface(UI* ui_interface) {
 		ui_interface->openHorizontalBox("Flange");
 		ui_interface->declare(&fHslider1, "6", "");
-		ui_interface->addHorizontalSlider("Rate", &fHslider1, 0.25f, 0.0f, 3.0f, 0.00999999978f);
+		ui_interface->addHorizontalSlider("Rate", &fHslider1, 0.5f, 0.0f, 3.0f, 0.00999999978f);
 		ui_interface->declare(&fHslider2, "7", "");
-		ui_interface->addHorizontalSlider("Width", &fHslider2, 0.5f, 0.0f, 1.0f, 0.00999999978f);
+		ui_interface->addHorizontalSlider("Width", &fHslider2, 0.0f, 0.0f, 1.0f, 0.00999999978f);
 		ui_interface->declare(&fHslider0, "7", "");
-		ui_interface->addHorizontalSlider("echoFeedback", &fHslider0, 0.25f, 0.0f, 1.0f, 0.00999999978f);
+		ui_interface->addHorizontalSlider("echoFeedback", &fHslider0, 0.0f, 0.0f, 1.0f, 0.00999999978f);
 		ui_interface->closeBox();
 	}
 	
