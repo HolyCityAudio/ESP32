@@ -52,6 +52,7 @@ class flangerOSC
     #endif
 
     public:
+	// fUI was moved by hand from private to public in this class
         MapUI* fUI;    
         flangerOSC(int sample_rate, int buffer_size);
         ~flangerOSC();

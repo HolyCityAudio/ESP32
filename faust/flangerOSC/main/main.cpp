@@ -38,6 +38,7 @@ extern "C" {
 #include "button.h"
 }
 
+// this code is WIP to try to abstract a button menu
 class Buttonmenu {
 	public:
 		int gpioCodeUp;
@@ -82,11 +83,6 @@ void app_main(void)
 	float width = 0.25;
     AC101 AC101;
 
-#if BUTTONSUPPORT
-	button_event_t ev;
-	QueueHandle_t button_events = button_init(PIN_BIT(5) | PIN_BIT(13) | PIN_BIT(18)  | PIN_BIT(19) | PIN_BIT(23) | PIN_BIT(36));
-#endif
-	
 	// try to get the wireless SSID and password from NVRAM
 	esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -182,6 +178,11 @@ void app_main(void)
 	
     AC101.begin();
 	AC101.SetVolumeHeadphone(63);
+#if BUTTONSUPPORT
+	button_event_t ev;
+	QueueHandle_t button_events = button_init(PIN_BIT(5) | PIN_BIT(13) | PIN_BIT(18)  | PIN_BIT(19) | PIN_BIT(23) | PIN_BIT(36));
+#endif
+
 	printf("ssid %s\n", wifi_ssid);	
     initialise_wifi(wifi_ssid, wifi_pass);
     wait_for_ip();
