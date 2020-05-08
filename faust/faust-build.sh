@@ -94,30 +94,21 @@ menuLoop()
         printf "    3) Edit $filename.cpp                                               \n"
         printf "    4) Edit any file                                               \n"
         printf "    5) Execute idf.py fullclean                                    \n"
-	printf "    6) Build code only                                             \n"
-	printf "    7) Build and upload code, then monitor                         \n"
-	printf "    8) make menuconfig                                             \n"
-	printf "    9) Save as reference                                           \n"
-	printf "    10) Exit                                                        \n"
+	printf "    6) Build C++ code only                                             \n"
+	printf "    7) Compile DSP code only                                             \n"
+	printf "    8) Build and upload C++ code, then monitor                         \n"
+	printf "    9) Monitor                         \n"
+	printf "    10) make menuconfig                                             \n"
+	printf "    11) Save as reference                                           \n"
+	printf "    12) Exit                                                        \n"
 	printf "                                                                   \n"
 	printf "===================================================================\n"
 
-	getNumRange 1 10 "Choose a menu selection"
+	getNumRange 1 12 "Choose a menu selection"
 	get_num="$getNumRangeValue"
 
 	if [ "$get_num" = 1 ]; then
-            "$EDITOR" main/$filename.dsp
-            faust2esp32 -lib -ac101 main/$filename.dsp
-            if [ $? -ne 0 ]; then
-	        echo "Faust compiler error!"
-	        exit 1 
-            fi
-            unzip $filename.zip
-            if [ $? -ne 0 ]; then
-            	echo "unzip error!"
-	        exit 1 
-            fi
-            mv $filename/*.* main
+            "$EDITOR" main/$filename.dsp &
         elif [ "$get_num" = 2 ]; then
             "$EDITOR" main/main.cpp &
         elif [ "$get_num" = 3 ]; then
@@ -135,15 +126,31 @@ menuLoop()
 	    echo "idf.py fullclean"
 	    idf.py fullclean
         elif [ "$get_num" = 6 ]; then
-            echo "Building..."
+            echo "Building C++..."
 	    idf.py build
         elif [ "$get_num" = 7 ]; then
+            echo "Compiling DSP code..."
+            faust2esp32 -lib -ac101 main/$filename.dsp
+            if [ $? -ne 0 ]; then
+	        echo "Faust compiler error!"
+	        exit 1 
+            fi
+            unzip $filename.zip
+            if [ $? -ne 0 ]; then
+            	echo "unzip error!"
+	        exit 1 
+            fi
+            mv $filename/*.* main
+        elif [ "$get_num" = 8 ]; then
             echo "Building, flashing, monitor..."
 	    idf.py -p $PORT -b $BAUD flash monitor
-        elif [ "$get_num" = 8 ]; then
+        elif [ "$get_num" = 9 ]; then
+            echo "Monitor..."
+	    idf.py -p $PORT -b $BAUD monitor
+        elif [ "$get_num" = 10 ]; then
             echo "Make menuconfig..."
 	    make menuconfig
-        elif [ "$get_num" = 9 ]; then
+        elif [ "$get_num" = 11 ]; then
             echo "Saving reference..."
 	    savePath=../reference/$filename
 	    if [ ! -d "$savePath" ]; then
@@ -156,9 +163,11 @@ menuLoop()
                 cp main/main.cpp "$savePath"
 	        cp main/$filename.cpp "$savePath"
 	        cp main/$filename.dsp "$savePath"
+	        cp build/$filename.elf "$savePath"
 	        cp sdkconfig "$savePath"
 		pushd "$savePath"
-		tar cvf $tarfilename.tar main.cpp $filename.cpp $filename.dsp sdkconfig
+		tar cvf $tarfilename.tar main.cpp $filename.cpp $filename.dsp sdkconfig $filename.elf
+		rm $tarfilename.tar main.cpp $filename.cpp $filename.dsp sdkconfig $filename.elf
 		popd
 	    else
 		echo "Target file $savePath/$tarfileanme already exists!"
@@ -166,7 +175,7 @@ menuLoop()
 		echo
 		read anykey
  	    fi
-        elif [ "$get_num" = 10 ]; then
+        elif [ "$get_num" = 12 ]; then
            if ask "Are you sure you want to exit?"; then
                 exit 0
             fi
