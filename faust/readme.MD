@@ -20,7 +20,7 @@ This will show the following menu:<br>
 
     1) Edit the basicFlanger.dsp file
     2) Edit main.cpp
-    3) Edit basicFlangercpp
+    3) Edit basicFlanger.cpp
     4) Edit any file
     5) Execute idf.py fullclean
     6) Build C++ code only
