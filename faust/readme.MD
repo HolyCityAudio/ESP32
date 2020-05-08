@@ -16,21 +16,23 @@ then run<br>
 <br>
 This will show the following menu:<br>
 
-============================ Main Menu ============================
+============================ Main Menu ============================<br>
 
     1) Edit the basicFlanger.dsp file
     2) Edit main.cpp
-    3) Edit basicFlanger.cpp
+    3) Edit basicFlangercpp
     4) Edit any file
     5) Execute idf.py fullclean
-    6) Build code only
-    7) Build and upload code, then monitor
-    8) make menuconfig
-    9) Save as reference
-    10) Exit
+    6) Build C++ code only
+    7) Compile DSP code only
+    8) Build and upload C++ code, then monitor
+    9) Monitor
+    10) make menuconfig
+    11) Save as reference
+    12) Exit
 
 ===================================================================<br>
-Choose a menu selection (1 - 10):<br>
+Choose a menu selection (1 - 12):<br>
 
 I encourage you to edit the faust-build.sh script to suit your needs.
 Currently I use the notepad++ windows program as my text editor.  
@@ -40,6 +42,6 @@ If you'd rather use vi, then change the line:
 to:<br>
 `EDITOR="vi"`
 
-You should also set the COM port and baud rate according to what your board will support.  This is just my quick attempt at setting up a menu that lets me quickly get to most of what I'd like to do.  Note that opening the Faust DSP file launches the editor in the background, so the Faust compiler is run immediately.  I do this so I can keep the editor open.  It means that after I save my Faust changes, I hit "1" again, which triggers the compilation.
+You should also set the COM port and baud rate according to what your board will support.  This is just my quick attempt at setting up a menu that lets me quickly get to most of what I'd like to do.  Compiling the faust (dsp) source to C++ is a separate step as occasionally it is necessary to edit one of the generated files prior to building the final firmware.
 
-Option 9, "Save as reference", makes a "tar" file of the important bits of your project and puts them in ../reference, which you'll have to create if you want to use this.  This function hasn't been heavily tested.
+Option 11, "Save as reference", makes a "tar" file of the important bits of your project and puts them in ../reference, which you'll have to create if you want to use this.  This function hasn't been heavily tested.
