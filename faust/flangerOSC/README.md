@@ -1,8 +1,8 @@
 ### faust flangerOSC
 
-This is a basic echo with feedback feeding into a single flanger for the ESP32-A1S audio/wifi/bluetooth dev board.
+Here's a delay combined with two flangers (one in the feedback loop), controllable by the ESP32-A1S audio dev board's buttons (3 parameters up/down) as well as OSC over WiFi (7 parameters).
 
-This example shows OSC control of the patch parameters using TouchOSC, though I suppose anything which generates OSC messages could be used.  The TouchOSC file is included.
+This example shows OSC control of the patch parameters using TouchOSC, though I suppose anything which generates OSC messages could be used.  The TouchOSC file is included.  The phase buttons in the supplied touchosc file aren't hooked up yet in the code.
 
 Right now, the WiFi SSID and password are hard wired in wifi.cpp.  Maybe I'll figure out how to integrate the setup which uses an Android app and saves that info to the NVRAM.
 
